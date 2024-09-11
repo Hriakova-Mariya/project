@@ -22,7 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-r2jwz4*ebn@7t1cl$jkmz3#1tw38!zcy1xg#st)+)i()+x5mmr'
 
-SITE_ID =1
+SITE_ID = 1
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -43,6 +43,10 @@ INSTALLED_APPS = [
     'django.contrib.flatpages',
     'simpleapp',
     'django_filters',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.yandex',
 ]
 
 MIDDLEWARE = [
@@ -54,6 +58,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
+
 ]
 
 ROOT_URLCONF = 'project.urls'
@@ -73,6 +79,13 @@ TEMPLATES = [
         },
     },
 ]
+
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
 
 WSGI_APPLICATION = 'project.wsgi.application'
 
@@ -132,3 +145,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 STATICFILES_DIRS = [
     BASE_DIR / "static"
 ]
+
+LOGIN_REDIRECT_URL = "/products"
+
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_EMAIL_VERIFICATION = 'none'
+
