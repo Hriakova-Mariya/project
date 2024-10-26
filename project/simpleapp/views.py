@@ -1,14 +1,48 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.views.generic import (
     ListView, DetailView, CreateView, UpdateView, DeleteView
 )
 from django.urls import reverse_lazy
-from .models import Product
-from datetime import datetime
+from .models import Product, Subscription, Category
 from .filters import ProductFilter
 from .forms import ProductForm
+from django.contrib.auth.decorators import login_required
+from django.db.models import Exists, OuterRef
+from django.shortcuts import render
+from django.views.decorators.csrf import csrf_protect
+
+@login_required
+@csrf_protect
+def subscriptions(request):
+    if request.method == 'POST':
+        category_id = request.POST.get('category_id')
+        category = Category.objects.get(id=category_id)
+        action = request.POST.get('action')
+
+        if action == 'subscribe':
+            Subscription.objects.create(
+                user=request.user,
+                category=category
+            )
+        elif action =='unsubscribe':
+            Subscription.objects.filter(
+                user=request.user,
+                category=category,
+            ).delete()
+
+    categories_with_subscriptions = Category.objects.annotate(
+        user_subscribed=Exists(
+            Subscription.object.filter(
+                user=request.user,
+                category=OuterRef('pk')
+            )
+        )
+    ).order_by('name')
+    return render(
+        request,
+        'subscriptions.html',
+        {'categories' : categories_with_subscriptions}
+    )
 
 
 class ProductsList(ListView):
@@ -38,20 +72,22 @@ class ProductDetail(DetailView):
     context_object_name = 'product'
 
 
-class ProductCreate(LoginRequiredMixin, CreateView):
-    raise_exception = True
+class ProductCreate(PermissionRequiredMixin, CreateView):
+    permission_required = ('simpleapp.add_product',)
     form_class = ProductForm
     model = Product
     template_name = 'product_edit.html'
 
 
-class ProductUpdate(UpdateView):
+class ProductUpdate(PermissionRequiredMixin, UpdateView):
+    permission_required = ('simpleapp.change_product',)
     form_class = ProductForm
     model = Product
     template_name = 'product_edit.html'
 
 
-class ProductDelete(DeleteView):
+class ProductDelete(PermissionRequiredMixin, DeleteView):
+    permission_required = ('simpleapp.delete_product',)
     model = Product
     template_name = 'product_delete.html'
     success_url = reverse_lazy('product_list')
