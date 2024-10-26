@@ -161,14 +161,15 @@ EMAIL_HOST_USER = "yof.yellow@yandex.ru"
 EMAIL_HOST_PASSWORD = "shcrgylxlhmvvfrg"
 EMAIL_USE_TLS = False
 EMAIL_USE_SSL = True
-
+# используется, когда рассылка идет по одному типу пользователей
 DEFAULT_FROM_EMAIL = "yof.yellow@yandex.ru"
 
-SERVER_EMAIL = "example@yandex.ru"
-MANAGERS = (
-    ('Ivan', 'ivan@yandex.ru'),
-    ('Petr', 'petr@yandex.ru'),
-)
-ADMINS = (
-    ('anton', 'anton@yandex.ru'),
-)
+# используется когда рассылка идет не только простым пользователям, но и менеджерам и тд
+SERVER_EMAIL = "yof.yellow@yandex.ru"
+# MANAGERS = (
+#     ('Ivan', 'ivan@yandex.ru'),
+#     ('Petr', 'petr@yandex.ru'),
+# )
+# ADMINS = (
+#     ('anton', 'anton@yandex.ru'),
+# )

@@ -20,11 +20,8 @@ def subscriptions(request):
         action = request.POST.get('action')
 
         if action == 'subscribe':
-            Subscription.objects.create(
-                user=request.user,
-                category=category
-            )
-        elif action =='unsubscribe':
+            Subscription.objects.create(user=request.user, category=category)
+        elif action == 'unsubscribe':
             Subscription.objects.filter(
                 user=request.user,
                 category=category,
@@ -32,18 +29,17 @@ def subscriptions(request):
 
     categories_with_subscriptions = Category.objects.annotate(
         user_subscribed=Exists(
-            Subscription.object.filter(
+            Subscription.objects.filter(
                 user=request.user,
-                category=OuterRef('pk')
+                category=OuterRef('pk'),
             )
         )
     ).order_by('name')
     return render(
         request,
         'subscriptions.html',
-        {'categories' : categories_with_subscriptions}
+        {'categories': categories_with_subscriptions},
     )
-
 
 class ProductsList(ListView):
     model = Product

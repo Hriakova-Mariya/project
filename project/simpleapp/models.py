@@ -46,3 +46,8 @@ class Subscription(models.Model):
         on_delete=models.CASCADE,
         related_name='subscriptions',
     )
+    category = models.ForeignKey(
+        to='Category',
+        on_delete=models.CASCADE,
+        related_name='subscriptions',
+    )
