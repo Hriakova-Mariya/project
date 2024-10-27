@@ -153,7 +153,11 @@ ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 ACCOUNT_FORMS = {'signup' : 'accounts.forms.CustomSignupForm'}
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# отправляет письма сразу на почту
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+# печатает письма в консоль
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 EMAIL_HOST = 'smtp.yandex.ru'
 EMAIL_PORT = 465
